@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -22,7 +21,6 @@ class ArticleControllerTest {
         this.mvc = mvc;
     }
 
-    @Disabled("구현 중")
     @DisplayName("[View][Get] 게시글 리스트 (게시판) 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestingArticlesView_thenReturnArticlesView() throws Exception {
@@ -32,7 +30,7 @@ class ArticleControllerTest {
         mvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 // 타입이 TEXT_HTML 인지 확인
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 // 이 URL 에 해당한 뷰가 있어야 한다.
                 .andExpect(view().name("articles/index"))
                 // model 에 해당 키의 데이터가 있는지 확인
@@ -49,7 +47,7 @@ class ArticleControllerTest {
         mvc.perform(get("/articles/1"))
                 .andExpect(status().isOk())
                 // 타입이 TEXT_HTML 인지 확인
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 // 이 URL 에 해당한 뷰가 있어야 한다.
                 .andExpect(view().name("articles/detail"))
                 // model 에 해당 키의 데이터가 있는지 확인
@@ -67,7 +65,7 @@ class ArticleControllerTest {
         mvc.perform(get("/article/search"))
                 .andExpect(status().isOk())
                 // 타입이 TEXT_HTML 인지 확인
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 // 이 URL 에 해당한 뷰가 있어야 한다.
                 .andExpect(view().name("articles/search"));
     }
@@ -82,7 +80,7 @@ class ArticleControllerTest {
         mvc.perform(get("/article/search-hashtag"))
                 .andExpect(status().isOk())
                 // 타입이 TEXT_HTML 인지 확인
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 // 이 URL 에 해당한 뷰가 있어야 한다.
                 .andExpect(view().name("articles/search-hashtag"));
     }
