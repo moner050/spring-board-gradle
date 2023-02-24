@@ -1,3 +1,10 @@
+-- 테스트 계정
+-- TODO: 테스트용 계정이지만 비밀번호가 노출된 데이터를 세팅해놔서 개선해야함
+INSERT INTO user_account(user_id, user_password, email, nickname, memo, created_at, created_by, modified_at, modified_by)
+VALUES('LMH', '123qwe!', 'lmh@mail.com', 'NickLMH', 'Memo LMH', now(), 'LMH', now(), 'LMH');
+
+
+-- 임의의 게시글
 insert into Article (title, content, hashtag, created_at, created_by, modified_at, modified_by) values ('Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.', 'Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.
 
 Nam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus.
