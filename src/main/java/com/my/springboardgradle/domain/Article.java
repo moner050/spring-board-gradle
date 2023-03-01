@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Table(indexes = {
         @Index(columnList = "title"),
         @Index(columnList = "hashtag"),
@@ -24,6 +24,8 @@ public class Article extends AuditingFields{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter @ManyToOne(optional = false) private UserAccount userAccount;
+
     @Setter @Column(nullable = false) private String title;                           // 제목
     @Setter @Column(nullable = false, length = 10000) private String content;         // 본문
 
@@ -31,8 +33,8 @@ public class Article extends AuditingFields{
 
     // 순환참조 방지를 위해 끊어주기
     @ToString.Exclude
-    // id 를 기준으로 정렬하겠다.
-    @OrderBy("id")
+    // 생성일자 기준으로 정렬하겠다.
+    @OrderBy("createdAt DESC")
     // 기본값으로 지정해주면 두개의 Entity 이름을 합치기 때문에 mappedBy 로 명시
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     // Article 에 연동되어있는 Comment 는 중복을 허용하지 않고 List 로 보겠다.
@@ -41,14 +43,15 @@ public class Article extends AuditingFields{
     protected Article() {
     }
 
-    private Article(String title, String content, String hashtag) {
+    private Article(UserAccount userAccount, String title, String content, String hashtag) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
     }
 
-    public static Article of (String title, String content, String hashtag) {
-        return new Article(title, content, hashtag);
+    public static Article of (UserAccount userAccount, String title, String content, String hashtag) {
+        return new Article(userAccount, title, content, hashtag);
     }
 
     // 객체의 동일성, 동등성 검사를 위한 equals, hashCode

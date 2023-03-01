@@ -2,17 +2,17 @@ package com.my.springboardgradle.repository;
 
 import com.my.springboardgradle.config.JpaConfig;
 import com.my.springboardgradle.domain.Article;
+import com.my.springboardgradle.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("testdb")
 // 테스트 상태에서 돌려도 testdb를 따로 불러오지 않고 설정되있는 것을 쓴다.
@@ -25,12 +25,15 @@ class JpaRepositoryTest {
 
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
+    private final UserAccountRepository userAccountRepository;
 
     public JpaRepositoryTest(
             @Autowired ArticleRepository articleRepository,
-            @Autowired ArticleCommentRepository articleCommentRepository) {
+            @Autowired ArticleCommentRepository articleCommentRepository,
+            @Autowired UserAccountRepository userAccountRepository) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
     @DisplayName("select test")
@@ -54,7 +57,8 @@ class JpaRepositoryTest {
         long previousCount = articleRepository.count();
 
         // When
-        Article savedArticle = articleRepository.save(Article.of("new Article", "new Content", "#sping"));
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("LMHLMH", "PW", null, null, null));
+        Article savedArticle = articleRepository.save(Article.of(userAccount,"new Article", "new Content", "#sping"));
 
         // Then
         assertThat(articleRepository.count())
