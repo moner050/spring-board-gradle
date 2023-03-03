@@ -40,6 +40,8 @@ spring:
       hibernate.format_sql: true
       # 복잡한 쿼리를 사용하게 될 때 IN QUERY 로 바꿔줘서 한번에 SELECT 를 해줘서 가져오기
       hibernate.default_batch_fetch_size: 100
+    # Open Session In View 를 열어줄지 꺼줄지
+    open-in-view: false
   # H2 웹 콘솔을 쓸지 말지 정해주기
   h2:
     console:
