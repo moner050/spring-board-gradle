@@ -1,15 +1,28 @@
 package com.my.springboardgradle.controller;
 
 import com.my.springboardgradle.config.SecurityConfig;
+import com.my.springboardgradle.dto.ArticleWithCommentsDto;
+import com.my.springboardgradle.dto.UserAccountDto;
+import com.my.springboardgradle.service.ArticleService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -20,6 +33,9 @@ class ArticleControllerTest {
 
     private final MockMvc mvc;
 
+    // MockMVC 가 API 의 입출력만 보게끔 하기 위해
+    @MockBean private ArticleService articleService;
+
     public ArticleControllerTest(@Autowired MockMvc mvc) {
         this.mvc = mvc;
     }
@@ -28,6 +44,7 @@ class ArticleControllerTest {
     @Test
     public void givenNothing_whenRequestingArticlesView_thenReturnArticlesView() throws Exception {
         // Given
+        given(articleService.searchArticles(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
 
         // When&Then
         mvc.perform(get("/articles"))
@@ -38,12 +55,16 @@ class ArticleControllerTest {
                 .andExpect(view().name("articles/index"))
                 // model 에 해당 키의 데이터가 있는지 확인
                 .andExpect(model().attributeExists("articles"));
+
+        then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
     }
 
     @DisplayName("[View][Get] 게시글 상세 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestingArticleView_thenReturnArticleView() throws Exception {
         // Given
+        Long articleId = 1L;
+        given(articleService.getArticle(articleId)).willReturn(createArticleWithCommentDto());
 
         // When&Then
         mvc.perform(get("/articles/1"))
@@ -55,6 +76,8 @@ class ArticleControllerTest {
                 // model 에 해당 키의 데이터가 있는지 확인
                 .andExpect(model().attributeExists("article"))
                 .andExpect(model().attributeExists("articleComments"));
+
+        then(articleService).should().getArticle(articleId);
     }
 
     @Disabled("구현 중")
@@ -85,5 +108,38 @@ class ArticleControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 // 이 URL 에 해당한 뷰가 있어야 한다.
                 .andExpect(view().name("articles/search-hashtag"));
+    }
+
+    private ArticleWithCommentsDto createArticleWithCommentDto() {
+        return ArticleWithCommentsDto.of(
+                1L,
+                createUserAccountDto(),
+                Set.of(),
+                "title",
+                "content",
+                "#java",
+                LocalDateTime.now(),
+                "lmh",
+                LocalDateTime.now(),
+                "lmh"
+
+        );
+
+    }
+
+    private UserAccountDto createUserAccountDto() {
+        return UserAccountDto.of(
+                "lmh",
+                "pw",
+                "lmh@email.com",
+                "Lmh",
+                "This is Good",
+                LocalDateTime.now(),
+                "Lmh",
+                LocalDateTime.now(),
+                "Lmh"
+
+        );
+
     }
 }
