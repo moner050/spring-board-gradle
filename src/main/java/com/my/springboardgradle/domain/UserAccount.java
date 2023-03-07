@@ -9,6 +9,12 @@ import java.util.Objects;
 
 @Getter
 @ToString
+@Table(indexes = {
+        @Index(columnList = "userId", unique = true),
+        @Index(columnList = "email", unique = true),
+        @Index(columnList = "createdAt"),
+        @Index(columnList = "createdBy")
+})
 @Entity
 public class UserAccount extends AuditingFields{
 
