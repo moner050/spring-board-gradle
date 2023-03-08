@@ -25,18 +25,18 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     @Transactional(readOnly = true)
-    public Page<ArticleDto> searchArticles(SearchType searchType, String search_keyword, Pageable pageable) {
+    public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
         // 검색어가 null 이거나 띄어쓰기만 있는 경우에는 전체 글 목록 리턴
-        if (search_keyword == null || search_keyword.isBlank()) {
+        if (searchKeyword == null || searchKeyword.isBlank()) {
             return articleRepository.findAll(pageable).map(ArticleDto::from);
         }
 
         return switch (searchType) {
-            case TITLE -> articleRepository.findByTitleContaining(search_keyword, pageable).map(ArticleDto::from);
-            case CONTENT -> articleRepository.findByContentContaining(search_keyword, pageable).map(ArticleDto::from);
-            case ID -> articleRepository.findByUserAccount_UserIdContaining(search_keyword, pageable).map(ArticleDto::from);
-            case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(search_keyword, pageable).map(ArticleDto::from);
-            case HASHTAG -> articleRepository.findByHashtag("#" + search_keyword, pageable).map(ArticleDto::from);
+            case TITLE -> articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case CONTENT -> articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case ID -> articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case HASHTAG -> articleRepository.findByHashtag("#" + searchKeyword, pageable).map(ArticleDto::from);
         };
 
     }
