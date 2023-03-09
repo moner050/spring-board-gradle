@@ -2,6 +2,7 @@ package com.my.springboardgradle.repository;
 
 import com.my.springboardgradle.domain.Article;
 import com.my.springboardgradle.domain.QArticle;
+import com.my.springboardgradle.repository.querydsl.ArticleRepositoryCustom;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface ArticleRepository extends
         JpaRepository<Article, Long>,
+        // Custom querydsl Repository 연동시켜주기
+        ArticleRepositoryCustom,
         // 기본적으로 이 Entity 안에 있는 기본 검색기능을 추가해준다.
         QuerydslPredicateExecutor<Article>,
         // 우리의 입맛에 맞는 검색기능을 위해 추가.
