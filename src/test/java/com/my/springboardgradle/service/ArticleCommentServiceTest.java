@@ -36,17 +36,16 @@ class ArticleCommentServiceTest {
     void givenArticleId_whenSearchingComments_thenReturnsArticleComments() {
         // Given
         Long articleId = 1L;
-
         ArticleComment expected = createArticleComment("content");
-        given(articleCommentRepository.findByArticle_Id(articleId))
-                .willReturn(List.of(expected));
+        given(articleCommentRepository.findByArticle_Id(articleId)).willReturn(List.of(expected));
 
         // When
-        List<ArticleCommentDto> actual =  sut.searchArticleComments(articleId);
+        List<ArticleCommentDto> actual = sut.searchArticleComments(articleId);
 
         // Then
-        assertThat(actual).hasSize(1)
-                        .first().hasFieldOrPropertyWithValue("content", expected.getContent());
+        assertThat(actual)
+                .hasSize(1)
+                .first().hasFieldOrPropertyWithValue("content", expected.getContent());
         then(articleCommentRepository).should().findByArticle_Id(articleId);
 
     }
@@ -178,7 +177,7 @@ class ArticleCommentServiceTest {
                 1L,
                 1L,
                 createUserAccountDto(),
-                "content",
+                content,
                 LocalDateTime.now(),
                 "lmh",
                 LocalDateTime.now(),
