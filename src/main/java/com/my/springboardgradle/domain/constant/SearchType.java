@@ -1,4 +1,4 @@
-package com.my.springboardgradle.domain.type;
+package com.my.springboardgradle.domain.constant;
 
 import lombok.Getter;
 

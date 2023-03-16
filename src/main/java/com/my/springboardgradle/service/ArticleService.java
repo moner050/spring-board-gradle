@@ -1,10 +1,12 @@
 package com.my.springboardgradle.service;
 
 import com.my.springboardgradle.domain.Article;
-import com.my.springboardgradle.domain.type.SearchType;
+import com.my.springboardgradle.domain.UserAccount;
+import com.my.springboardgradle.domain.constant.SearchType;
 import com.my.springboardgradle.dto.ArticleDto;
 import com.my.springboardgradle.dto.ArticleWithCommentsDto;
 import com.my.springboardgradle.repository.ArticleRepository;
+import com.my.springboardgradle.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
@@ -41,23 +44,31 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public ArticleWithCommentsDto getArticle(long articleId) {
+    public ArticleWithCommentsDto getArticleWithComments(long articleId) {
         return articleRepository.findById(articleId)
                 .map(ArticleWithCommentsDto::from)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
+    @Transactional(readOnly = true)
+    public ArticleDto getArticle(Long articleId) {
+        return articleRepository.findById(articleId)
+                .map(ArticleDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
+    }
+
     public void saveArticle(ArticleDto dto) {
-        articleRepository.save(dto.toEntity());
+        UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
+        articleRepository.save(dto.toEntity(userAccount));
     }
 
     // save 를 명시하지 않아도 클래스 레벨의 트랜잭션에 의해서
     // 트랜잭션이 끝날 때 영속성 컨텍스트는 article 이 변한것을 감지하고
     // 감지한 부분에 대한 쿼리를 날려 쿼리를 날린다.
-    public void updateArticle(ArticleDto dto) {
+    public void updateArticle(Long articleId, ArticleDto dto) {
         try{
             // Select 쿼리를 발생시키지 않고 레퍼런스만 가져오는 코드
-            Article article = articleRepository.getReferenceById(dto.id());
+            Article article = articleRepository.getReferenceById(articleId);
             if (dto.title() != null) article.setTitle(dto.title());
             if (dto.content() != null) article.setContent(dto.content());
             article.setHashtag(dto.hashtag());
