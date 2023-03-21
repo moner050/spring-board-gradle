@@ -7,6 +7,7 @@ import com.my.springboardgradle.dto.ArticleCommentDto;
 import com.my.springboardgradle.dto.UserAccountDto;
 import com.my.springboardgradle.repository.ArticleCommentRepository;
 import com.my.springboardgradle.repository.ArticleRepository;
+import com.my.springboardgradle.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,7 @@ class ArticleCommentServiceTest {
 
     @Mock private ArticleCommentRepository articleCommentRepository;
     @Mock private ArticleRepository articleRepository;
+    @Mock private UserAccountRepository userAccountRepository;
 
 
     @DisplayName("게시글 ID 로 조회하면, 해당하는 댓글 리스트를 반환한다.")
@@ -57,6 +59,7 @@ class ArticleCommentServiceTest {
         // Given
         ArticleCommentDto dto = createArticleCommentDto("댓글");
         given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().userId())).willReturn(createUserAccount());
         given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
 
         // When
@@ -64,6 +67,7 @@ class ArticleCommentServiceTest {
 
         // Then
         then(articleRepository).should().getReferenceById(dto.articleId());
+        then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
         then(articleCommentRepository).should().save(any(ArticleComment.class));
     }
 
@@ -79,28 +83,28 @@ class ArticleCommentServiceTest {
 
         // Then
         then(articleRepository).should().getReferenceById(dto.articleId());
+        then(userAccountRepository).shouldHaveNoInteractions();
         then(articleCommentRepository).shouldHaveNoInteractions();
     }
 
-    @DisplayName("댓글 정보를 입력하면, 댓글을 수정한다.")
+    @DisplayName("댓글 정보를 입력하면, 댓글을 저장한다.")
     @Test
-    void givenArticleCommentInfo_whenUpdatingArticleComment_thenUpdatesArticleComment() {
+    void givenArticleCommentInfo_whenSavingArticleComment_thenSavesArticleComment() {
         // Given
-        String oldContent = "content";
-        String updatedContent = "댓글";
-        ArticleComment articleComment = createArticleComment(oldContent);
-        ArticleCommentDto dto = createArticleCommentDto(updatedContent);
-        given(articleCommentRepository.getReferenceById(dto.id())).willReturn(articleComment);
+        ArticleCommentDto dto = createArticleCommentDto("댓글");
+        given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().userId())).willReturn(createUserAccount());
+        given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
 
         // When
-        sut.updateArticleComment(dto);
+        sut.saveArticleComment(dto);
 
         // Then
-        assertThat(articleComment.getContent())
-                .isNotEqualTo(oldContent)
-                .isEqualTo(updatedContent);
-        then(articleCommentRepository).should().getReferenceById(dto.id());
+        then(articleRepository).should().getReferenceById(dto.articleId());
+        then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
+        then(articleCommentRepository).should().save(any(ArticleComment.class));
     }
+
 
     @DisplayName("없는 댓글 정보를 수정하려고 하면, 경고 로그를 찍고 아무 것도 안 한다.")
     @Test
@@ -131,47 +135,6 @@ class ArticleCommentServiceTest {
         then(articleCommentRepository).should().deleteById(articleCommentId);
     }
 
-    private UserAccountDto createUserAccountDto() {
-        return UserAccountDto.of(
-                "lmh",
-                "password",
-                "lmh@email.com",
-                "Lmh",
-                "This is memo",
-                LocalDateTime.now(),
-                "lmh",
-                LocalDateTime.now(),
-                "lmh"
-        );
-    }
-
-    private UserAccount createUserAccount() {
-        return UserAccount.of(
-                "lmh",
-                "password",
-                "lmh@email.com",
-                "Lmh",
-                "Memo"
-        );
-    }
-
-    private Article createArticle() {
-        return Article.of(
-                createUserAccount(),
-                "title",
-                "content",
-                "#hashtag"
-        );
-    }
-
-    private ArticleComment createArticleComment(String content) {
-        return ArticleComment.of(
-                Article.of(createUserAccount(), "title", "content", "#hashtag")
-                ,createUserAccount(),
-                content
-        );
-    }
-
     private ArticleCommentDto createArticleCommentDto(String content) {
         return ArticleCommentDto.of(
                 1L,
@@ -182,6 +145,43 @@ class ArticleCommentServiceTest {
                 "lmh",
                 LocalDateTime.now(),
                 "lmh"
+        );
+    }
+    private UserAccountDto createUserAccountDto() {
+        return UserAccountDto.of(
+                "LMH",
+                "password",
+                "lmh@mail.com",
+                "lmh",
+                "This is memo",
+                LocalDateTime.now(),
+                "lmh",
+                LocalDateTime.now(),
+                "lmh"
+        );
+    }
+    private ArticleComment createArticleComment(String content) {
+        return ArticleComment.of(
+                Article.of(createUserAccount(), "title", "content", "hashtag"),
+                createUserAccount(),
+                content
+        );
+    }
+    private UserAccount createUserAccount() {
+        return UserAccount.of(
+                "lmh",
+                "password",
+                "lmh@email.com",
+                "lmh",
+                null
+        );
+    }
+    private Article createArticle() {
+        return Article.of(
+                createUserAccount(),
+                "title",
+                "content",
+                "#java"
         );
     }
 }
