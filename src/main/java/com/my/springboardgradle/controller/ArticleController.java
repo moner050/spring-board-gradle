@@ -106,18 +106,18 @@ public class ArticleController {
     public String updateArticle(
             @PathVariable Long articleId,
             @AuthenticationPrincipal BoardPrincipal boardPrincipal,
-            ArticleRequest articleRequest)
-    {
-        articleService.updateArticle(articleId, articleRequest.toDto(
-            boardPrincipal.toDto()));
+            ArticleRequest articleRequest
+    ) {
+        articleService.updateArticle(articleId, articleRequest.toDto(boardPrincipal.toDto()));
 
         return "redirect:/articles/" + articleId;
     }
 
     @PostMapping("/{articleId}/delete")
-    public String deleteArticle(@PathVariable Long articleId,
-                                @AuthenticationPrincipal BoardPrincipal boardPrincipal)
-    {
+    public String deleteArticle(
+            @PathVariable Long articleId,
+            @AuthenticationPrincipal BoardPrincipal boardPrincipal
+    ) {
         articleService.deleteArticle(articleId, boardPrincipal.getUsername());
 
         return "redirect:/articles";
