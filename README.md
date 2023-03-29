@@ -1,7 +1,47 @@
-# spring-board-gradle
+# 스프링 게시판 서비스
+
+## ⚙ 프로젝트 개발 환경
+- 통합개발환경 : Intellij
+- JDK 버전 : JDK 17
+- 스프링부트 버전 : 2.7.8
+- Gradle 버전 : 7.6
+- 사용 DB : MySQL
+- 빌드툴 : Gradle
+- 관리툴 : Git, Github, GitKraken
+
+## ⚒ 기술 스택
+- Backend
+    - Spring Boot
+    - Spring Boot Actuator
+    - Spring Web
+    - Rest Repositories
+    - Rest Repositories HAL Explorer
+    - Spring Security
+    - Spring Data Jpa
+    - Spring Devtools
+    - Spring Configuration Processor
+    - Lombok
+    - QueryDSL 5.0.0
+    
+- Database
+    - MySQL 8.0.28
+    - H2 Database
+    
+- FrontEnd
+  - Thymeleaf
+  - Bootstrap 5.3.0
 
 
-# 게시판 API 설계
+## 📜 프로젝트 구현 기능
+- 회원 (UserAccount)
+  - 로그인 및 로그아웃
+- 게시글 (Article)
+  - 게시글 조회, 등록, 수정, 삭제
+- 댓글 (ArticleComment)
+  - 게시글 내의 댓글 조회, 등록, 수정, 삭제
+
+
+## 게시판 API 설계
 
 |종류|URL|Method|기능|입력 데이터|
 |---|---|---|---|---|
