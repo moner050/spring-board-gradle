@@ -1,5 +1,6 @@
 package com.my.springboardgradle.dto.security;
 
+
 import com.my.springboardgradle.dto.UserAccountDto;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,35 +57,23 @@ public record BoardPrincipal(
         );
     }
 
+
     // 권한
-    @Override public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
+    @Override public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }
+    @Override public String getUsername() { return username; }
+    @Override public String getPassword() { return password; }
 
-    @Override public String getPassword() {
-        return username;
-    }
-    @Override public String getUsername() {
-        return password;
-    }
+    @Override public boolean isAccountNonExpired() { return true; }
+    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
+    @Override public boolean isEnabled() { return true; }
 
-    @Override public boolean isAccountNonExpired() {
-        return true;
-    }
-    @Override public boolean isAccountNonLocked() {
-        return true;
-    }
-    @Override public boolean isCredentialsNonExpired() {
-        return true;
-    }
-    @Override public boolean isEnabled() {
-        return true;
-    }
 
     public enum RoleType {
         USER("ROLE_USER");
 
-        @Getter private final String name;
+        @Getter
+        private final String name;
 
         RoleType(String name) {
             this.name = name;
