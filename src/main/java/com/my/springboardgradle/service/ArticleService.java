@@ -72,7 +72,7 @@ public class ArticleService {
             UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
 
             // 게시글의 사용자와 인증된 사용자가 같은 사람이면 업데이트
-            if (article.getUserAccount().equals(userAccount)) {
+            if (article.getUserAccount() == userAccount) {
                 if (dto.title() != null) article.setTitle(dto.title());
                 if (dto.content() != null) article.setContent(dto.content());
                 article.setHashtag(dto.hashtag());
